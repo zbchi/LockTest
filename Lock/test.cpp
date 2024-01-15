@@ -5,10 +5,12 @@
 #include <gtest/gtest.h>
 #include <stdlib.h>
 extern pthread_mutex_t mutex;
+extern pthread_mutex_t mutex1;
 extern int number;
 
 TEST(LockTest1A,mutex1) {
   pthread_mutex_init(&mutex, NULL);
+  pthread_mutex_init(&mutex1, NULL);
   pthread_t p1, p2;
   pthread_create(&p1, NULL, funcA_num, NULL);
   pthread_create(&p2, NULL, funcB_num, NULL);
