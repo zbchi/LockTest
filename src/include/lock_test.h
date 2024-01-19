@@ -1,0 +1,1 @@
+void AddNumber(int number);
