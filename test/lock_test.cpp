@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <thread>
 #include <vector>
-#include <fstream>
 
 #include "thread_guard.h"
 #include "lock_test.h"
@@ -13,32 +12,11 @@ TEST(LockTest,InitTest) {
   pthread_mutex_unlock(&metux.lock);
 }
 
-TEST(LockTest, BasicPutTest) {
-  int number = 0;
-
-  for (int tid = 0; tid < 5; tid++) {
-    std::thread t{AddNumber, number};
-    thread_guard g(t);
-  }
-  ASSERT_EQ(number, 0);
-}
-
-TEST(LockTest,MutexPutTest) {
-  int number = 0;
-
-  for (int tid = 0; tid < 5; tid++) {
-    std::thread t{AddNumber, std::ref(number)};
-    thread_guard g(t);
-  }
-  ASSERT_EQ(number, 5);
-}
-
-TEST(LockTest,MutexPutTest1) {
+TEST(LockTest,MutexPutTest_1) {
   std::vector<std::thread> threads;
   lock_test_t metux;
   int balance = 0;
   LockTestInit(&metux);
-
 
   std::thread deposit_1{Deposit, metux, std::ref(balance), 20};
   threads.push_back(std::move(deposit_1));
@@ -50,4 +28,59 @@ TEST(LockTest,MutexPutTest1) {
   }
 
   ASSERT_EQ(balance, 50);
+}
+
+TEST(lockTest,MutexPutTest_2) {
+  std::vector<std::thread> threads;
+  lock_test_t metux;
+  int balance = 0;
+  const int keys_per_thread = 10000;
+  LockTestInit(&metux);
+
+  for (int tid = 1; tid < 4; tid++) {
+    std::thread t([&balance, tid, metux] {
+      for(uint32_t i = 0; i < keys_per_thread; i++) {
+        Deposit(metux, balance, tid);
+      }
+    });
+    threads.push_back(std::move(t));
+  }
+
+  for (auto &t : threads) {
+    t.join();
+  }
+
+  ASSERT_EQ(balance, 6 * keys_per_thread);
+}
+
+TEST(lockTest,MutexPutTest_3) {
+  std::vector<std::thread> threads;
+  lock_test_t metux;
+  int balance = 0;
+  const int keys_per_thread = 10000;
+  LockTestInit(&metux);
+
+  for (int tid = 1; tid < 4; tid++) {
+    std::thread t([&balance, tid, metux] {
+      for (uint32_t i = 0; i < keys_per_thread; i++) {
+        Deposit(metux, balance, tid);
+      }
+    });
+    threads.push_back(std::move(t));
+  }
+
+  for (int tid = 1; tid < 4; tid++) {
+    std::thread t([&balance, tid, metux] {
+      for (uint32_t i = 0; i < keys_per_thread; i++) {
+        Withdraw(metux, balance, tid);
+      }
+    });
+    threads.push_back(std::move(t));
+  }
+
+  for (auto &t : threads) {
+    t.join();
+  }
+
+  ASSERT_EQ(balance, 0);
 }

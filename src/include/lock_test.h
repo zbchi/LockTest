@@ -1,7 +1,5 @@
 #include <pthread.h>
 
-void AddNumber(int number);
-
 typedef struct {
   pthread_mutex_t lock;
 }lock_test_t;
