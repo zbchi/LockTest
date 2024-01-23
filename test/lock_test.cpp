@@ -2,77 +2,35 @@
 #include <thread>
 #include <vector>
 
-#include "thread_guard.h"
-#include "lock_test.h"
+#include "lock.h"
 
-TEST(LockTest,InitTest) {
-  lock_test_t metux;
-  LockTestInit(&metux);
-  ASSERT_EQ(pthread_mutex_trylock(&metux.lock), 0);
-  pthread_mutex_unlock(&metux.lock);
+TEST_F(LockTest, InitTest) {
+  ASSERT_EQ(account_.amount, 0);
+  ASSERT_EQ(pthread_mutex_trylock(&account_.lock), 0);
+  pthread_mutex_unlock(&account_.lock);
 }
 
-TEST(LockTest,MutexPutTest_1) {
-  std::vector<std::thread> threads;
-  lock_test_t metux;
-  int balance = 0;
-  LockTestInit(&metux);
+TEST_F(LockTest, BasicTest) {
+  std::thread Income_1{Income, std::ref(account_), 30};
+  std::thread Income_2{Income, std::ref(account_), 30};
+  std::thread Expend_1{Expend, std::ref(account_), 10};
 
-  std::thread deposit_1{Deposit, metux, std::ref(balance), 20};
-  threads.push_back(std::move(deposit_1));
-  std::thread deposit_2{Deposit, metux, std::ref(balance), 30};
-  threads.push_back(std::move(deposit_2));
+  Income_1.join();
+  Income_2.join();
+  Expend_1.join();
 
-  for (auto &t : threads) {
-    t.join();
-  }
-
-  ASSERT_EQ(balance, 50);
+  ASSERT_EQ(account_.amount, 50);
 }
 
-TEST(lockTest,MutexPutTest_2) {
+TEST_F(LockTest, SingleIncrementTest) {
   std::vector<std::thread> threads;
-  lock_test_t metux;
-  int balance = 0;
-  const int keys_per_thread = 10000;
-  LockTestInit(&metux);
+  const int keys_per_thread = 1000;
+  auto& account = account_;
 
   for (int tid = 1; tid < 4; tid++) {
-    std::thread t([&balance, tid, metux] {
-      for(uint32_t i = 0; i < keys_per_thread; i++) {
-        Deposit(metux, balance, tid);
-      }
-    });
-    threads.push_back(std::move(t));
-  }
-
-  for (auto &t : threads) {
-    t.join();
-  }
-
-  ASSERT_EQ(balance, 6 * keys_per_thread);
-}
-
-TEST(lockTest,MutexPutTest_3) {
-  std::vector<std::thread> threads;
-  lock_test_t metux;
-  int balance = 0;
-  const int keys_per_thread = 10000;
-  LockTestInit(&metux);
-
-  for (int tid = 1; tid < 4; tid++) {
-    std::thread t([&balance, tid, metux] {
+    std::thread t([&account, tid] {
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        Deposit(metux, balance, tid);
-      }
-    });
-    threads.push_back(std::move(t));
-  }
-
-  for (int tid = 1; tid < 4; tid++) {
-    std::thread t([&balance, tid, metux] {
-      for (uint32_t i = 0; i < keys_per_thread; i++) {
-        Withdraw(metux, balance, tid);
+        Expend(account, tid);
       }
     });
     threads.push_back(std::move(t));
@@ -82,5 +40,35 @@ TEST(lockTest,MutexPutTest_3) {
     t.join();
   }
 
-  ASSERT_EQ(balance, 0);
+  ASSERT_EQ(account.amount, 6 * keys_per_thread);
+}
+
+TEST_F(LockTest, MutexPutTest) {
+  std::vector<std::thread> threads;
+  const int keys_per_thread = 1000;
+  auto &account = account_;
+
+  for (int tid = 1; tid < 4; tid++) {
+    std::thread t([&account, tid] {
+      for (uint32_t i = 0; i < keys_per_thread; i++) {
+        Income(account, tid);
+      }
+    });
+    threads.push_back(std::move(t));
+  }
+
+  for (int tid = 1; tid < 4; tid++) {
+    std::thread t([&account, tid] {
+      for (uint32_t i = 0; i < keys_per_thread; i++) {
+        Expend(account, tid);
+      }
+    });
+    threads.push_back(std::move(t));
+  }
+
+  for (auto &t : threads) {
+    t.join();
+  }
+
+  ASSERT_EQ(account, 0);
 }
