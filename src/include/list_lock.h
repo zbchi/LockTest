@@ -13,7 +13,7 @@ typedef struct {
   pthread_cond_t cond;
 } list_lock_t;
 
-void initList(list_lock_t* list);
+void listInit(list_lock_t* list);
 void producer(list_lock_t list, DataType value);
 void consumer(list_lock_t list);
 int getListSize(list_lock_t list);

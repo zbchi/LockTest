@@ -2,7 +2,7 @@
 #include <thread>
 #include <vector>
 
-#include "lock.h"
+#include "test.h"
 
 TEST_F(LockTest, InitTest) {
   ASSERT_EQ(account_.amount, 0);
