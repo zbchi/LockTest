@@ -70,5 +70,5 @@ TEST_F(LockTest, MutexPutTest) {
     t.join();
   }
 
-  ASSERT_EQ(account, 0);
+  ASSERT_EQ(account.amount, 0);
 }
