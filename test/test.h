@@ -3,9 +3,12 @@
 #include <chrono>
 #include <random>
 
+extern "C"
+{
 #include "hash_lock.h"
 #include "list_lock.h"
 #include "lock.h"
+}
 
 class LockTest : public ::testing::Test {
  protected:

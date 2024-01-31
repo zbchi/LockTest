@@ -11,9 +11,9 @@ TEST_F(LockTest, InitTest) {
 }
 
 TEST_F(LockTest, BasicTest) {
-  std::thread Income_1{Income, std::ref(account_), 30};
-  std::thread Income_2{Income, std::ref(account_), 30};
-  std::thread Expend_1{Expend, std::ref(account_), 10};
+  std::thread Income_1{Income, &account_, 30};
+  std::thread Income_2{Income, &account_, 30};
+  std::thread Expend_1{Expend, &account_, 10};
 
   Income_1.join();
   Income_2.join();
@@ -24,13 +24,13 @@ TEST_F(LockTest, BasicTest) {
 
 TEST_F(LockTest, SingleIncrementTest) {
   std::vector<std::thread> threads;
-  const int keys_per_thread = 1000;
+  const int keys_per_thread = 10000;
   auto& account = account_;
 
   for (int tid = 1; tid < 4; tid++) {
     std::thread t([&account, tid] {
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        Expend(account, tid);
+        Income(&account, tid);
       }
     });
     threads.push_back(std::move(t));
@@ -45,13 +45,13 @@ TEST_F(LockTest, SingleIncrementTest) {
 
 TEST_F(LockTest, MutexPutTest) {
   std::vector<std::thread> threads;
-  const int keys_per_thread = 1000;
+  const int keys_per_thread = 10000;
   auto &account = account_;
 
   for (int tid = 1; tid < 4; tid++) {
     std::thread t([&account, tid] {
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        Income(account, tid);
+        Income(&account, tid);
       }
     });
     threads.push_back(std::move(t));
@@ -60,7 +60,7 @@ TEST_F(LockTest, MutexPutTest) {
   for (int tid = 1; tid < 4; tid++) {
     std::thread t([&account, tid] {
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        Expend(account, tid);
+        Expend(&account, tid);
       }
     });
     threads.push_back(std::move(t));

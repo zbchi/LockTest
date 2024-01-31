@@ -10,15 +10,14 @@ project(LockTest
 
 # Compilre setup
 if(NOT DEFINED LOCK_SANITIZER)
-        set(LOCK_SANITIZER thread)
+        set(LOCK_SANITIZER address)
 endif()
 
 message("${LOCK_SANITIZER} sanitizer will be enabled.")
 
 # Compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -fno-omit-frame-pointer -fno-optimize-sibling-calls")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=${LOCK_SANITIZER}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -fsanitize=${LOCK_SANITIZER} -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
@@ -28,10 +27,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Includes.
 set(LOCK_SRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include)
-# set(LOCK_TEST_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/test/test.h)
 
 include_directories(${LOCK_SRC_INCLUDE_DIR})
 include_directories(BEFORE src)
+
+enable_testing()
 
 # Other CMake modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
