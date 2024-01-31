@@ -2,9 +2,9 @@
 
 typedef struct {
   int amount;
-  pthread_mutex_t lock;
+  pthread_mutex_t mutex;
 }lock_t;
 
-void amountInit(lock_t* mutex);
-void Income(lock_t* mutex, int amount);
-void Expend(lock_t* mutex, int amount);
+void amountInit(lock_t* account);
+void Income(lock_t* account, int amount);
+void Expend(lock_t* account, int amount);

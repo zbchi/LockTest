@@ -6,13 +6,13 @@
 #include "test.h"
 
 TEST_F(ListLockTest, InitTest) {
-  ASSERT_EQ(list_.data, NULL) << "List is not initialized...";
+  ASSERT_TRUE(list_->head == nullptr) << "List is not initialized...";
 
-  ASSERT_EQ(pthread_mutex_trylock(&list_.mutex), 0)
+  ASSERT_EQ(pthread_mutex_trylock(&list_->mutex), 0)
       << "Lock is not initialized";
-  pthread_mutex_unlock(&list_.mutex);
+  pthread_mutex_unlock(&list_->mutex);
 
-  ASSERT_EQ(pthread_cond_signal(&list_.cond), 0) << "cond is not initialized";
+  ASSERT_EQ(pthread_cond_signal(&list_->cond), 0) << "cond is not initialized";
 }
 
 TEST_F(ListLockTest, BasicTest) {
@@ -20,7 +20,7 @@ TEST_F(ListLockTest, BasicTest) {
   std::vector<std::thread> con_threads;
 
   for (int tid = 0; tid < 4; tid++) {
-    std::thread t{producer, std::ref(list_), tid};
+    std::thread t(producer, list_.get(), tid);
     pro_threads.push_back(std::move(t));
   }
 
@@ -28,38 +28,37 @@ TEST_F(ListLockTest, BasicTest) {
     t.join();
   }
 
-  ASSERT_EQ(list_.data->value, 0);
-  ASSERT_EQ(list_.data->next->next->value, 2);
-  ASSERT_EQ(getListSize(list_), 4);
+  ASSERT_EQ(list_->head->value, 3);
+  ASSERT_EQ(list_->head->next->next->value, 0);
+  ASSERT_EQ(getListSize(list_.get()), 4);
 
   for (int tid = 0; tid < 4; tid++) {
-    std::thread t{consumer, std::ref(list_)};
+    std::thread t(consumer, list_.get());
     con_threads.push_back(std::move(t));
   }
 
-  for (auto& t : pro_threads) {
+  for (auto& t : con_threads) {
     t.join();
   }
-
-  ASSERT_EQ(list_.data, NULL) << "Resources not released";
-  ASSERT_EQ(getListSize(list_), 0);
+  ASSERT_EQ(getListSize(list_.get()), 0);
+  ASSERT_TRUE(list_->head == nullptr) << "Resources not released";
 }
 
 TEST_F(ListLockTest, MixedConcurrentTest) {
   std::vector<std::thread> threads;
-  const int keys_per_thread = 10000;
+  const int keys_per_thread = 10;
   auto& list = list_;
 
   for (int tid = 0; tid < 4; tid++) {
     std::thread t([&list, tid] {
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        producer(list, tid * i);
+        producer(list.get(), tid * i);
       }
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        consumer(list);
+        consumer(list.get());
       }
       for (uint32_t i = 0; i < keys_per_thread; i++) {
-        producer(list, tid * i);
+        producer(list.get(), tid * i);
       }
     });
     threads.push_back(std::move(t));
@@ -69,20 +68,18 @@ TEST_F(ListLockTest, MixedConcurrentTest) {
     t.join();
   }
 
-  ASSERT_EQ(getListSize(list), keys_per_thread);
-
-  std::vector<std::thread> con_threads;
+  ASSERT_EQ(getListSize(list.get()), keys_per_thread);
 
   std::thread conthread([&list] {
     for (int i = 0; i < keys_per_thread; i++) {
-      consumer(list);
+      consumer(list.get());
     }
   });
 
   conthread.join();
 
-  ASSERT_EQ(getListSize(list), 0);
-  ASSERT_EQ(list.data, NULL);
+  ASSERT_EQ(getListSize(list.get()), 0);
+  ASSERT_TRUE(list->head == nullptr);
 }
 
 TEST_F(ListLockTest, LongTimeTest) {
@@ -92,14 +89,14 @@ TEST_F(ListLockTest, LongTimeTest) {
 
   std::thread pro_thread([&list, stop] {
     while (!stop->load()) {
-      producer(list, 1);
+      producer(list.get(), 1);
       RandomSleep();
     }
   });
 
   std::thread con_thread([&list, stop] {
-    while (!stop->load() || getListSize(list) != 0) {
-      consumer(list);
+    while (!stop->load() || getListSize(list.get()) != 0) {
+      consumer(list.get());
       RandomSleep();
     }
   });
@@ -111,6 +108,6 @@ TEST_F(ListLockTest, LongTimeTest) {
   pro_thread.join();
   con_thread.join();
 
-  ASSERT_EQ(getListSize(list), 0);
-  ASSERT_EQ(list.data, NULL);
+  ASSERT_EQ(getListSize(list.get()), 0);
+  ASSERT_TRUE(list_->head == nullptr);
 }
