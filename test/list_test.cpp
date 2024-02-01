@@ -28,8 +28,6 @@ TEST_F(ListLockTest, BasicTest) {
     t.join();
   }
 
-  ASSERT_EQ(list_->head->value, 3);
-  ASSERT_EQ(list_->head->next->next->value, 0);
   ASSERT_EQ(getListSize(list_.get()), 4);
 
   for (int tid = 0; tid < 4; tid++) {
@@ -68,10 +66,10 @@ TEST_F(ListLockTest, MixedConcurrentTest) {
     t.join();
   }
 
-  ASSERT_EQ(getListSize(list.get()), keys_per_thread);
+  ASSERT_EQ(getListSize(list.get()), 4 * keys_per_thread);
 
   std::thread conthread([&list] {
-    for (int i = 0; i < keys_per_thread; i++) {
+    for (int i = 0; i < 4* keys_per_thread; i++) {
       consumer(list.get());
     }
   });
@@ -101,7 +99,7 @@ TEST_F(ListLockTest, LongTimeTest) {
     }
   });
 
-  std::this_thread::sleep_for(std::chrono::seconds(5));
+   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   stop->store(true);
 

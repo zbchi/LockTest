@@ -48,15 +48,15 @@ class ListLockTest : public ::testing::Test {
 class HashLockTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    table_ = std::make_shared<hash_lock_t>();
-    hashInit(table_.get());
+    bucket_ = std::make_shared<hash_lock_t>();
+    hashInit(bucket_.get());
   }
 
   virtual void TearDown() {
     for (int i = 0; i < HASHNUM; i++) {
-      pthread_mutex_destroy(&table_->table[i].mutex);
+      pthread_mutex_destroy(&bucket_->table[i].mutex);
     }
   }
 
-  std::shared_ptr<hash_lock_t> table_;
+  std::shared_ptr<hash_lock_t> bucket_;
 };

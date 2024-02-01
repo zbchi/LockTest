@@ -1,6 +1,6 @@
 #include <pthread.h>
 
-const int HASHNUM = 13;
+#define HASHNUM 13
 #define HASH(key) key % HASHNUM
 
 typedef struct HashNode {
@@ -18,7 +18,7 @@ typedef struct{
   struct HashTable table[HASHNUM];
 }hash_lock_t;
 
-void hashInit(hash_lock_t* table);
-int getValue(hash_lock_t* table, int key);
-void insert(hash_lock_t* table, int key,int value);
-int setKey(hash_lock_t* table,int key, int new_key);
+void hashInit(hash_lock_t* bucket);
+int getValue(hash_lock_t* bucket, int key);
+void insert(hash_lock_t* bucket, int key,int value);
+int setKey(hash_lock_t* bucket,int key, int new_key);
