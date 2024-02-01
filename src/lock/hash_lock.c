@@ -1,5 +1,6 @@
 #include "hash_lock.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 void hashInit(hash_lock_t* bucket) {
@@ -27,6 +28,21 @@ int getValue(hash_lock_t* bucket, int key) {
 
 void insert(hash_lock_t* bucket, int key, int value) {
   int index = HASH(key);
+
+  // Find if key already exists
+  pthread_mutex_lock(&bucket->table[index].mutex);
+  Hnode* current = bucket->table[index].head;
+  while (current != NULL) {
+    if (current->key == key) {
+      current->value = value;
+      pthread_mutex_unlock(&bucket->table[index].mutex);
+      return;
+    }
+    current = current->next;
+  }
+
+  // key does not exist
+  pthread_mutex_unlock(&bucket->table[index].mutex);
   Hnode* new_node = (Hnode*)malloc(sizeof(Hnode));
   new_node->key = key;
   new_node->value = value;
@@ -39,6 +55,7 @@ void insert(hash_lock_t* bucket, int key, int value) {
 
 int setKey(hash_lock_t* bucket, int key, int new_key) {
   int old_index = HASH(key);
+  int old_value;
   pthread_mutex_lock(&bucket->table[old_index].mutex);
 
   Hnode* old_node = bucket->table[old_index].head;
@@ -46,7 +63,12 @@ int setKey(hash_lock_t* bucket, int key, int new_key) {
 
   while (old_node != NULL) {
     if (old_node->key == key) {
-      pre_node->next = old_node->next;
+      if (pre_node == NULL) {
+        bucket->table[old_index].head = old_node->next;
+      } else {
+        pre_node->next = old_node->next;
+      }
+      old_value = old_node->value;
       break;
     }
     pre_node = old_node;
@@ -59,7 +81,7 @@ int setKey(hash_lock_t* bucket, int key, int new_key) {
   }
 
   free(old_node);
-  insert(bucket, new_key, old_node->value);
+  insert(bucket, new_key, old_value);
 
   return 0;
 }

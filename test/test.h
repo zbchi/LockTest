@@ -54,6 +54,13 @@ class HashLockTest : public ::testing::Test {
 
   virtual void TearDown() {
     for (int i = 0; i < HASHNUM; i++) {
+      Hnode* cur = bucket_->table[i].head;
+      while(cur != nullptr) {
+        Hnode* next = cur->next;
+        free(cur);
+        cur = next;
+      }
+      bucket_->table[i].head = nullptr;
       pthread_mutex_destroy(&bucket_->table[i].mutex);
     }
   }
