@@ -62,20 +62,20 @@ TEST_F(HashLockTest, MixedTest) {
   }
 }
 
-/* TEST_F(HashLockTest, MixedConcurrentTest) {
+TEST_F(HashLockTest, MixedConcurrentTest) {
   std::vector<std::thread> threads;
 
-  const int keys_per_thread = 10000;
+  const int keys_per_thread = 10;
+  const int max_number = keys_per_thread * 4 + 3;
   auto &bucket = bucket_;
 
   for (int tid = 0; tid < 4; tid++) {
     std::thread t([&bucket, tid] {
-      for (int i = 0; i < keys_per_thread; i++) {
-        insert(bucket.get(), i + tid, i * 4 + tid);
+      for (int i = 0; i <= keys_per_thread; i++) {
+        insert(bucket.get(), i * 4 + tid, (i * 4 + tid));
       }
-      for (int i = 0; i < keys_per_thread; i++) {
-        setKey(bucket.get(), i * 4 + tid, (HASHNUM + i * 4 + tid - 1) %
-HASHNUM);
+      for (int i = 0; i <= keys_per_thread; i++) {
+        setKey(bucket.get(), i * 4 + tid, (i * 4 + tid));
       }
     });
     threads.push_back(std::move(t));
@@ -106,9 +106,8 @@ HASHNUM);
     t.join();
   }
 
-  for (int i = 0, tid = 0; i < keys_per_thread * 4; i++) {
+  for (int i = 1; i < max_number; i++) {
     int data = getValue(bucket.get(), i);
-    ASSERT_EQ(data, (HASHNUM + i * 4 + tid - 1) % HASHNUM);
-    tid = (tid + 1) % 4;
+    ASSERT_EQ(i, data);
   }
-} */
+}

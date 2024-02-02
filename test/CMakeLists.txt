@@ -20,6 +20,7 @@ foreach(lock_test_source ${LOCK_TEST_SOURCES})
     add_dependencies(all-tests ${lock_test_name})
 
     gtest_discover_tests(${lock_test_name}
+            DISCOVERY_MODE PRE_TEST
             EXTRA_ARGS
             --gtest_catch_exceptions=0
             DISCOVERY_TIMEOUT 120
