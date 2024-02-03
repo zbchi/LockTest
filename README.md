@@ -21,14 +21,14 @@ cmake ..
 
 # Task Directions
 
-## lock_test 任务
+## lock_test
 
 涉及范围：
-- 简单锁的使用
+  - 简单锁的使用
 
 文档说明：[lock_test](./doc/lock_test/lock_test.md)
 
-## list_test 任务
+## list_test
 
 涉及范围：
 - 互斥锁的使用
@@ -37,7 +37,7 @@ cmake ..
 
 文档说明: [list_test](./doc/list_test/list_test.md)
 
-## hash_test 任务
+## hash_test
 
 涉及范围：
 - 多把互斥锁的使用
