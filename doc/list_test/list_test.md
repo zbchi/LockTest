@@ -18,7 +18,7 @@
 
 该结构定义为 `list_lock_t`
 
-在 list_lock_t 中，head 代表链表的头部([list.h](../../src/include/list_lock.h)中定义)。
+在 list_lock_t 中，head 代表链表的头部([list_lock.h](../../src/include/list_lock.h)中定义)。
 
 你需要完成以下四个操作：
 - listInit(list_lock_t* list) : 初始化 list_lock_t 结构。

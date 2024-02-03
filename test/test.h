@@ -55,7 +55,7 @@ class HashLockTest : public ::testing::Test {
   virtual void TearDown() {
     for (int i = 0; i < HASHNUM; i++) {
       Hnode* cur = bucket_->table[i].head;
-      while(cur != nullptr) {
+      while (cur != nullptr) {
         Hnode* next = cur->next;
         free(cur);
         cur = next;
@@ -66,4 +66,24 @@ class HashLockTest : public ::testing::Test {
   }
 
   std::shared_ptr<hash_lock_t> bucket_;
+};
+
+class Timer {
+ private:
+  std::string title;
+  std::chrono::high_resolution_clock::time_point m_start, m_stop;
+
+ public:
+  Timer(const std::string& title) : title(title) {
+    m_start = std::chrono::high_resolution_clock::now();
+  }
+
+  ~Timer() { stop(); }
+
+  void stop() {
+    m_stop = std::chrono::high_resolution_clock::now();
+    std::chrono::milliseconds ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(m_stop - m_start);
+    std::cout << title << " " << (ms.count()) * 0.001 << "s\n";
+  }
 };

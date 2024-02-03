@@ -28,22 +28,22 @@ cmake ..
 
 文档说明：[lock_test](./doc/lock_test/lock_test.md)
 
-## list_test
+## list_lock
 
 涉及范围：
 - 互斥锁的使用
 - 条件变量的使用
 - 生产者与消费者模型
 
-文档说明: [list_test](./doc/list_test/list_test.md)
+文档说明: [list_lock](./doc/list_test/list_test.md)
 
-## hash_test
+## hash_lock
 
 涉及范围：
 - 多把互斥锁的使用
 - 哈希桶与哈希函数
 
-文档说明: [hash_list](./doc/hash_test/hash_test.md)
+文档说明: [hash_lock](./doc/hash_test/hash_test.md)
 
 # Testing
 
