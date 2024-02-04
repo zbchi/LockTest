@@ -6,14 +6,14 @@
 
 生产者消费者共享缓冲区，生产者向缓冲区中放数据，消费者从缓冲取中取数据
 
-!<div style="text-align: center;">
-    <img src="list_test1.png" style="zoom: 45%;" />
+<div align="center">
+<img src="list_test1.png"alt="Editor" width="650" />
 </div>
 
 当缓冲取中没有数据时，消费者线程就必须进入挂起休眠状态，直到生产者向缓冲区中放入数据时，消费者才能被唤醒继续从缓冲区中取走数据。
 
-<div style="text-align: center;">
-    <img src="list_test2.png" style="zoom: 45%;" />
+<div align="center">
+<img src="list_test2.png"alt="Editor" width="650" />
 </div>
 
 ## Description

@@ -8,14 +8,14 @@
 
 当键值非常离散时，往往会导致大量的空白资源未被利用。因此采用哈希函数将键映射到一个连续的地址。
 
-<div style="text-align: center;">
-    <img src="hash_test.png" style="zoom: 45%;" />
+<div align="center">
+<img src="hash_test.png"alt="Editor" width="650" />
 </div>
 
 在并发环境下，可以通过一把大锁来保证整个哈希桶的并发安全。然而，当某个哈希序列很少被访问时，它仍然需要等待其他序列被访问结束后才能获得锁，这会导致性能损耗。为了优化这种情况，可以采用锁粒度的优化策略，即为每个哈希序列分配一把对应的锁。
 
-<div style="text-align: center;">
-    <img src="hash_test2.png" style="zoom: 45%;" />
+<div align="center">
+<img src="hash_test2.png"alt="Editor" width="650" />
 </div>
 
 ## Description
