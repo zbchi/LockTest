@@ -7,13 +7,13 @@
 在银行账户的资金收入与支出过程中，经常会面临短时间内多笔资金的移动变化。在单线程情况下，面对大量的任务，性能往往无法满足需求。因此，引入多线程成为解决方案。
 
 <div style="text-align: center;">
-    <img src="lock_test.png" style="zoom: 45%;" />
+    <img src="lock_test.png" style="max-width: 80%; max-height: 80%;" />
 </div>
 
 当计算机尚未完成一个请求处理时，又有另一个请求到来，那么此时应该如何保证数据在并发状态的安全？
 
 <div style="text-align: center;">
-    <img src="lock_test2.png" style="zoom: 45%;" />
+    <img src="lock_test2.png" style="max-width: 80%; max-height: 80%;" />
 </div>
 ## Description
 
