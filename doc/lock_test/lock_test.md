@@ -6,12 +6,15 @@
 
 在银行账户的资金收入与支出过程中，经常会面临短时间内多笔资金的移动变化。在单线程情况下，面对大量的任务，性能往往无法满足需求。因此，引入多线程成为解决方案。
 
-![lock_test](./lock_test.png)
+<div style="text-align: center;">
+    <img src="lock_test.png" style="zoom: 45%;" />
+</div>
 
 当计算机尚未完成一个请求处理时，又有另一个请求到来，那么此时应该如何保证数据在并发状态的安全？
 
-![lock_test2](./lock_test2.png)
-
+<div style="text-align: center;">
+    <img src="lock_test2.png" style="zoom: 45%;" />
+</div>
 ## Description
 
 你的任务是使用互斥锁来保证数据在并发状态下的安全。

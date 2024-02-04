@@ -1,3 +1,6 @@
+![GitHub License](https://img.shields.io/github/license/tiny-sky/LockTest?style=flat&logo=linux&color=fedcba&link=https%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby-sa%2F4.0%2F)
+
+
 # OVERVIER
 
 LockTest 是一个涉及 Linux 系统编程的多线程并发同步任务。
