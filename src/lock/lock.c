@@ -1,20 +1,15 @@
 #include "lock.h"
 
+#include <stdio.h>
+
 void amountInit(lock_t* Account) {
-  if(pthread_mutex_init(&Account->mutex,NULL) != 0) {
-    return;
-  }
-  Account->amount = 0;
+  perror("This function is not implemented");
 }
 
 void Income(lock_t* Account, int amount) {
-  pthread_mutex_lock(&Account->mutex);
-  Account->amount += amount;
-  pthread_mutex_unlock(&Account->mutex);
+  perror("This function is not implemented");
 }
 
 void Expend(lock_t* Account, int amount) {
-  pthread_mutex_lock(&Account->mutex);
-  Account->amount -= amount;
-  pthread_mutex_unlock(&Account->mutex);
+  perror("This function is not implemented");
 }

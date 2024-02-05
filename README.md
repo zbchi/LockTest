@@ -9,7 +9,19 @@ LockTest 是一个涉及 Linux 系统编程的多线程并发同步任务。
 
 知识点：多线程并发模型、锁、条件变量、数据结构等。
 
-开发环境建议：如果使用 VSCode，建议使用 CMake、C/C++ Extension Pack 和 clangd 插件。
+开发环境：如果使用 VSCode，确保已经下载 CMake、C/C++ Extension Pack 和 clangd 插件。
+
+或者你可以手动下载
+
+Ubuntu 用户
+```sh
+sudo apt-get install cmake clangd
+```
+
+Arch Linux 用户
+```sh
+yay -S cmake clangd
+```
 
 # Build
 

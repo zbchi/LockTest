@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-include(gtest)
+# include(gtest)
 include(GoogleTest)
 link_directories(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
@@ -28,7 +28,7 @@ foreach(lock_test_source ${LOCK_TEST_SOURCES})
             TIMEOUT 120
             )
 
-    target_link_libraries(${lock_test_name} lock GTest::gtest_main pthread)
+    target_link_libraries(${lock_test_name} lock gtest gtest_main pthread)
 
     # Set test target properties
     set_target_properties(${lock_test_name}

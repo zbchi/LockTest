@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 project(LockTest
         VERSION 2024.1
@@ -13,11 +14,20 @@ if(NOT DEFINED LOCK_SANITIZER)
         set(LOCK_SANITIZER address)
 endif()
 
-message("${LOCK_SANITIZER} sanitizer will be enabled.")
+# Find GTest library
+find_package(GTest REQUIRED)
+if(NOT GTest_FOUND)
+    include(gtest)
+else()
+    message(STATUS "GTest library found.")
+endif()
+
+message(STATUS "${LOCK_SANITIZER} sanitizer will be enabled.")
+message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER_ID}")
 
 # Compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -fsanitize=${LOCK_SANITIZER} -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -fsanitize=${LOCK_SANITIZER} -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
