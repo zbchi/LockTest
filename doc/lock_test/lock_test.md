@@ -15,6 +15,7 @@
 <div align="center">
 <img src="lock_test2.png"alt="Editor" width="650" />
 </div>
+
 ## Description
 
 你的任务是使用互斥锁来保证数据在并发状态下的安全。
