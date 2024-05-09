@@ -1,7 +1,6 @@
 ![GitHub License](https://img.shields.io/github/license/tiny-sky/LockTest?style=flat&logo=linux&color=fedcba&link=https%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby-sa%2F4.0%2F)
 
-
-# OVERVIER
+# OVERVIEW
 
 LockTest 是一个涉及 Linux 系统编程的多线程并发同步任务。
 
@@ -14,11 +13,13 @@ LockTest 是一个涉及 Linux 系统编程的多线程并发同步任务。
 或者你可以手动下载
 
 Ubuntu 用户
+
 ```sh
 sudo apt-get install cmake clangd
 ```
 
 Arch Linux 用户
+
 ```sh
 yay -S cmake clangd
 ```
@@ -28,6 +29,7 @@ yay -S cmake clangd
 clone 该仓库到本地
 
 要从命令行构建测试环境，请执行以下命令：
+
 ```sh
 mkdir build
 cd build
@@ -39,13 +41,15 @@ cmake ..
 ## lock_test
 
 涉及范围：
-  - 简单锁的使用
+
+- 简单锁的使用
 
 文档说明：[lock_test](./doc/lock_test/lock_test.md)
 
 ## list_lock
 
 涉及范围：
+
 - 互斥锁的使用
 - 条件变量的使用
 - 生产者与消费者模型
@@ -55,6 +59,7 @@ cmake ..
 ## hash_lock
 
 涉及范围：
+
 - 多把互斥锁的使用
 - 哈希桶与哈希函数
 
@@ -63,6 +68,7 @@ cmake ..
 # Testing
 
 我们将 GTest 用于单元测试用例，你可以从命令行单独编译和运行每一个测试：
+
 ```sh
 cd build
 make lock_test -j$(nproc)
@@ -77,6 +83,7 @@ make list_test hash_test -j$(nproc)
 这将会启用 [AddressSanitizer](https://github.com/google/sanitizers)
 
 如果你想启用其他的 Sanitizers
+
 ```
 cmake -DLOCK_SANITIZER=thread ..
 make -j$(nproc)
@@ -87,10 +94,13 @@ make -j$(nproc)
 在 Debug Mode 下，如果出现内存错误，你将会看到内存错误报告
 
 你可以使用 Valgrind 来定位出错位置
+
 ```sh
 valgrind --tool=memcheck --leak-check=full ./test/lock_test 
 ```
+
 你也可以使用 Valgrind 来检测多线程死锁问题
+
 ```sh
 valgrind --tool=helgrind ./test/lock_test 
 ```
