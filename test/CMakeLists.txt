@@ -6,6 +6,8 @@ link_directories(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 file(GLOB_RECURSE LOCK_TEST_SOURCES "${PROJECT_SOURCE_DIR}/test/*test.cpp")
 
+add_compile_options(-g -O0)
+
 # "make all-tests"
 add_custom_target(show-tests COMMAND ${CMAKE_CTEST_COMMAND} --show-only)
 add_custom_target(all-tests COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
